@@ -18,6 +18,8 @@ steps:
     dockerComposeFile: '**/docker-compose.yml'
     action: 'Run a Docker Compose command'
     dockerComposeCommand: 'build'
+    additionalImageTags: $(BuildImage)
+
 - task: DockerCompose@0
   inputs:
     containerregistrytype: 'Azure Container Registry'
@@ -26,3 +28,11 @@ steps:
     dockerComposeFile: '**/docker-compose.yml'
     action: 'Run a Docker Compose command'
     dockerComposeCommand: 'push'
+
+#Deployment image to kubernetes here ...
+- task: KubernetesManifest@0
+  inputs:
+    action: 'deploy'
+    kubernetesServiceConnection: 'cloudSpectraConn'
+    namespace: 'cloudspectrans'
+    manifests: '$(Build.SourcesDirecory)/deployment/gamingwebapp.ks-testld.yaml'
